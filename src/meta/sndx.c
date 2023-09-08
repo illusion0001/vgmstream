@@ -147,10 +147,14 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
     /* get stream name (NAME is tied to REQD/cues, and SFX cues repeat WAVEs, but should work ok for streams) */
     if (is_dual && find_chunk_le(sf_sxd1, get_id32be("NAME"),first_offset,0, &chunk_offset,NULL)) {
         /* table: relative offset (32b) + hash? (32b) + cue index (32b) */
-        int i;
+        int i = 0;
         int num_entries = read_s16le(chunk_offset + 0x04, sf_sxd1); /* can be bigger than streams */
+        VGM_LOG("SXD: num_entries: %i\n", num_entries);
         for (i = 0; i < num_entries; i++) {
             uint32_t index = read_u32le(chunk_offset + 0x08 + 0x08 + i * 0x0c,sf_sxd1);
+            VGM_LOG("SXD: chunk_offset: %lx\n", chunk_offset);
+            VGM_LOG("SXD: index: %x\n", index);
+            VGM_LOG("SXD: chunk_offset + 0x08 + 0x08 + i * 0x0c: %x\n", chunk_offset + 0x08 + 0x08 + i * 0x0c);
             if (index+1 == target_subsong) {
                 name_offset = chunk_offset + 0x08 + 0x00 + i*0x0c + read_u32le(chunk_offset + 0x08 + 0x00 + i * 0x0c, sf_sxd1);
                 break;
