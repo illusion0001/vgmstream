@@ -149,12 +149,12 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
         /* table: relative offset (32b) + hash? (32b) + cue index (32b) */
         int i = 0;
         int num_entries = read_s16le(chunk_offset + 0x04, sf_sxd1); /* can be bigger than streams */
-        printf("SXD: num_entries: %i\n", num_entries);
+        fprintf(stdout, "SXD: num_entries: %i\n", num_entries);
         for (i = 0; i < num_entries; i++) {
             uint32_t index = read_u32le(chunk_offset + 0x08 + 0x08 + i * 0x0c,sf_sxd1);
-            printf("SXD: chunk_offset: %lx\n", chunk_offset);
-            printf("SXD: index: %x\n", index);
-            printf("SXD: chunk_offset + 0x08 + 0x08 + i * 0x0c: %x\n", chunk_offset + 0x08 + 0x08 + i * 0x0c);
+            fprintf(stdout, "SXD: chunk_offset: %lx\n", chunk_offset);
+            fprintf(stdout, "SXD: index: %x\n", index);
+            fprintf(stdout, "SXD: chunk_offset + 0x08 + 0x08 + i * 0x0c: %x\n", chunk_offset + 0x08 + 0x08 + i * 0x0c);
             if (index+1 == target_subsong) {
                 name_offset = chunk_offset + 0x08 + 0x00 + i*0x0c + read_u32le(chunk_offset + 0x08 + 0x00 + i * 0x0c, sf_sxd1);
                 break;
@@ -163,7 +163,7 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
     }
 
     if (is_external && !is_dual) {
-        printf("SXD: found single sxd with external data\n");
+        fprintf(stdout, "SXD: found single sxd with external data\n");
         goto fail;
     }
 
@@ -175,7 +175,7 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
     }
 
     if (start_offset > get_streamfile_size(sf_data)) {
-        printf("SXD: wrong location?\n");
+        fprintf(stdout, "SXD: wrong location?\n");
         goto fail;
     }
 
@@ -196,7 +196,7 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
     if (name_offset)
     {
         read_string(vgmstream->stream_name,STREAM_NAME_SIZE, name_offset,sf_sxd1);
-        printf("SXD: internal stream name: %s\n", name_offset);
+        fprintf(stdout, "SXD: internal stream name: %s\n", name_offset);
     }
 
     switch (codec) {
@@ -214,6 +214,8 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
 
 #ifdef VGM_USE_ATRAC9
         case 0x42: {    /* ATRAC9 [Soul Sacrifice (Vita), Freedom Wars (Vita), Gravity Rush 2 (PS4)] */
+            fprintf(stdout, "case 0x42:\n");
+            fprintf(stdout, "#ifdef VGM_USE_ATRAC9\n");
             atrac9_config cfg = {0};
 
             cfg.channels = vgmstream->channels;
