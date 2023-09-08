@@ -149,12 +149,12 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
         /* table: relative offset (32b) + hash? (32b) + cue index (32b) */
         int i = 0;
         int num_entries = read_s16le(chunk_offset + 0x04, sf_sxd1); /* can be bigger than streams */
-        VGM_LOG("SXD: num_entries: %i\n", num_entries);
+        printf("SXD: num_entries: %i\n", num_entries);
         for (i = 0; i < num_entries; i++) {
             uint32_t index = read_u32le(chunk_offset + 0x08 + 0x08 + i * 0x0c,sf_sxd1);
-            VGM_LOG("SXD: chunk_offset: %lx\n", chunk_offset);
-            VGM_LOG("SXD: index: %x\n", index);
-            VGM_LOG("SXD: chunk_offset + 0x08 + 0x08 + i * 0x0c: %x\n", chunk_offset + 0x08 + 0x08 + i * 0x0c);
+            printf("SXD: chunk_offset: %lx\n", chunk_offset);
+            printf("SXD: index: %x\n", index);
+            printf("SXD: chunk_offset + 0x08 + 0x08 + i * 0x0c: %x\n", chunk_offset + 0x08 + 0x08 + i * 0x0c);
             if (index+1 == target_subsong) {
                 name_offset = chunk_offset + 0x08 + 0x00 + i*0x0c + read_u32le(chunk_offset + 0x08 + 0x00 + i * 0x0c, sf_sxd1);
                 break;
@@ -163,7 +163,7 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
     }
 
     if (is_external && !is_dual) {
-        VGM_LOG("SXD: found single sxd with external data\n");
+        printf("SXD: found single sxd with external data\n");
         goto fail;
     }
 
@@ -175,7 +175,7 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
     }
 
     if (start_offset > get_streamfile_size(sf_data)) {
-        VGM_LOG("SXD: wrong location?\n");
+        printf("SXD: wrong location?\n");
         goto fail;
     }
 
@@ -196,7 +196,7 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
     if (name_offset)
     {
         read_string(vgmstream->stream_name,STREAM_NAME_SIZE, name_offset,sf_sxd1);
-        VGM_LOG("SXD: internal stream name: %s\n", name_offset);
+        printf("SXD: internal stream name: %s\n", name_offset);
     }
 
     switch (codec) {
