@@ -190,7 +190,10 @@ VGMSTREAM* init_vgmstream_sndx(STREAMFILE* sf) {
     vgmstream->num_streams = total_subsongs;
     vgmstream->stream_size = stream_size;
     if (name_offset)
+    {
         read_string(vgmstream->stream_name,STREAM_NAME_SIZE, name_offset,sf_sxd1);
+        VGM_LOG("SXD: internal stream name: %s\n", name_offset);
+    }
 
     switch (codec) {
         case 0x20:      /* PS-ADPCM [Hot Shots Golf: World Invitational (Vita) sfx] */
